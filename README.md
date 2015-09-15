@@ -8,6 +8,9 @@ run the script:
 sh start.sh
 ```
 
+This script starts dirt, server and client for tidal
+
+
 ##Slow Start
 
 
