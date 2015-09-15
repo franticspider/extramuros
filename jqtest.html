@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"> 
+  <title>extramuros jqgp</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="/channel/bcsocket.js"></script>
+  <script src="/share/share.uncompressed.js"></script>
+  <script src="/share/textarea.js"></script>
+  <script src="/share/json.js"></script>
+  <script src="jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="visuals.js"></script>
+  <script src="browser.js"></script>
+  <script src="misc.js"></script>
+
+  <script>
+ 
+  $( document ).ready(function() {
+    $( "p" ).text( "The DOM is now loaded and can be manipulated." );
+
+    var table = $('<table></table>').addClass('foo');
+    for(i=0; i<3; i++){
+        var row = $('<tr></tr>').addClass('bar');
+
+        var col = $('<td></td>').addClass('boo').text('result ' + i);
+
+        var buttons = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval');
+
+        col.append(buttons);
+
+        row.append(col);
+
+        table.append(row);
+    }
+
+    $('#here_table').append(table);
+
+  });
+ 
+  </script>
+ 
+</head>
+<body>
+ 
+<p>Not loaded yet.</p>
+
+<div id="here_table"></div>
+ 
+ 
+</body>
+</html>
