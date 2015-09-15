@@ -1,5 +1,16 @@
-extramuros - language-neutral shared-buffer networked live coding system
-==========
+#extramuros - language-neutral shared-buffer networked live coding system
+
+##Quick start:
+
+run the script: 
+
+```
+sh start.sh
+```
+
+##Slow Start
+
+
 
 See install-osx.md and install-win.md for installation instructions.  See this document for usage.
 
