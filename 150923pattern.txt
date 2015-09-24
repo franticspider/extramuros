@@ -1,0 +1,9 @@
+
+
+d3 $ slow 32 $ striate' 32 (1/16) $ sound "fuckable"
+
+
+d2 $ chop 2 $ sound "bd bass1*2 blip*2" |+| vowel"a o e" 
+
+
+d1  $ striate 12 $ sound "[[[feel:5*8,blip*3] feel:3*8]?, casio*4]" |+| vowel "a e i"

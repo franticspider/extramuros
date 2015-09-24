@@ -1,0 +1,77 @@
+
+d1 $ sound "dork2:1(7,9) jazz gabba"
+d1 $ sound "dork2:1(7,9) jazz gabba seawolf"
+d1 $ sound "dork2:1(7,9) jazz gabba seawolf sheffield"
+d1 $ sound "dork2:1(7,9) , jazz gabba seawolf sheffield"
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr bd") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr bd sitar") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr bd subroc3d") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd  bd subroc3d") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd  bd subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd  subroc3d:1 subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bleep:3 subroc3d:1 subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "space subroc3d:1 subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "casio:2 space:2 subroc3d:1 subroc3d:2") 
+d1 $ sound "speedupdown jazz gabba seawolf sheffield"
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "[casio:2 space:2] [subroc3d:1 subroc3d:2]") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ rev $ sound "[casio:2 space:2] [subroc3d:1 subroc3d:2]") 
+d1 $ interlace (rev  sound "bd sn bleep:3 arp") (every 3 rev ( sound "bd sn:2 kurt") 
+d1 $ interlace (rev  sound "bd sn bleep:3 arp") (every 3 rev ( sound "bd sn:2 kurt") 
+d1 $ interlace (sound "bd sn bleep:3 arp") (every 3 rev ( sound "bd sn:2 kurt") 
+d1 $ interlace (sound "bd sn kurt") (every 3 rev $ sound "bd sn:2") 
+d1 $ interlace (sound "bd sn arp:2 kurt") (every 3 rev $ sound "bd sn:2") 
+d1 $ sound "[bd bd] [bd [sn [sn sn] sn] sn]"
+d1 $ every 4 (rev) (sound "bd*2 [bd [sn sn*2 sn] sn]")
+d1 $ sound "can(5,8)"
+d1 $ sound "arp(5,8)"
+d1 $ sound "arp:2(5,8)"
+d1 $ sound "bass:2(5,8)"
+d1 $ sound "bass:3(5,8)"
+d2 $ interlace (sound "bd sn arp:2 kurt") (every 3 rev $ sound "bd sn:2") 
+d3 $ interlace (sound "bd cp cp  sn kurt") (every 3 rev $ sound "bd hh:2 hc sn:2") |+| pan ((*) <$> sinewave1 <*> (slow 8 $ "0 0.25 0.75"))
+d3 $ interlace (sound "amencutup") (every 3 rev $ sound "bd hh:2 hc sn:2") |+| pan ((*) <$> sinewave1 <*> (slow 8 $ "0 0.25 0.75"))
+d3 $ interlace (sound "amencutup") (every 3 rev $ sound "birds3") |+| pan ((*) <$> sinewave1 <*> (slow 8 $ "0 0.25 0.75"))
+d3 $ interlace (sound "amencutup") (every 3 rev $ sound "birds3:2") |+| pan ((*) <$> sinewave1 <*> (slow 8 $ "0 0.25 0.75"))
+d1 $ sound "bass:3(7,12)"
+d1 $ sound "bass:3(5,9)"
+d1 $ sound "bass:4(11,24)"
+d1 $ sound "bass:1(11,24)"
+d1 $ sound "baa2:1(11,24)"
+d1 $ sound "blip:1(11,24)"
+d1 $ sound "blip:1(5,24)"
+d1 $ sound "blip:1(7,24)"
+d2 $ interlace (sound "bd sn arp:2 bev") (every 3 rev $ sound "bd sn:2") 
+d2 $ interlace (sound "bd sn arp:2 bev:2") (every 3 rev $ sound "bd sn:2") 
+d2 $ interlace (sound "bd sn arp:2 cp") (every 3 rev $ sound "bd sn:2") 
+d2 $ interlace (sound "bd sn arp:2 blue") (every 3 rev $ sound "bd sn:2") 
+d2 $ interlace (sound "bd sn arp:2 casio") (every 3 rev $ sound "bd sn:2") 
+d2 $ interlace (sound "bd sn arp:2 casio") (every 3 rev $ sound "bd sn:2 casio") 
+d1 $ sound "blip:1(7,24)"
+d1 $ sound "can:1(7,24)"
+d1 $ sound "dork2:1(7,24)"
+d1 $ sound "dork2:1(7,9)"
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 casio") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 casio crow") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 casio crow diphone2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr") 
+d1 $ sound "dork2:1(7,9) fuckable"
+d1 $ sound "dork2:1(7,9) fuckable:2"
+d1 $ sound "dork2:1(7,9) fuckable:2 gabba"
+d1 $ sound "dork2:1(7,9) foo gabba"
+d1 $ sound "dork2:1(7,9) jazz gabba"
+d1 $ sound "dork2:1(7,9) jazz gabba seawolf"
+d1 $ sound "dork2:1(7,9) jazz gabba seawolf sheffield"
+d1 $ sound "dork2:1(7,9) , jazz gabba seawolf sheffield"
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr bd") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr bd sitar") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd sn:2 dr bd subroc3d") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd  bd subroc3d") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd  bd subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bd  subroc3d:1 subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "bleep:3 subroc3d:1 subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "space subroc3d:1 subroc3d:2") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "casio:2 space:2 subroc3d:1 subroc3d:2") 
+d1 $ sound "speedupdown jazz gabba seawolf sheffield"
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ sound "[casio:2 space:2] [subroc3d:1 subroc3d:2]") 
+d2 $ interlace (sound "bd sn arp:2") (every 3 rev $ rev $ sound "[casio:2 space:2] [subroc3d:1 subroc3d:2]") 
+

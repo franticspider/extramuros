@@ -15,19 +15,27 @@
   <script src="misc.js"></script>
 
   <script>
+
+
  
   $( document ).ready(function() {
+    var ncells = 4;
+
     $( "p" ).text( "The DOM is now loaded and can be manipulated." );
 
     var table = $('<table></table>').addClass('foo');
-    for(i=0; i<3; i++){
+    for(i=0; i<ncells; i++){
         var row = $('<tr></tr>').addClass('bar');
 
         var col = $('<td></td>').addClass('boo').text('result ' + i);
 
-        var buttons = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval');
+        var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval');
+        var ubutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','auto');
+        var ta = $('<textarea></textarea>').attr('id','edit1').attr('rows','16');//>******</textarea>
 
-        col.append(buttons);
+        col.append(ebutton);
+        col.append(ubutton);
+        col.append(ta);
 
         row.append(col);
 
