@@ -17,34 +17,67 @@
   <script>
 
 
- 
-  $( document ).ready(function() {
-    var ncells = 4;
+    function add_cell(cc){
 
-    $( "p" ).text( "The DOM is now loaded and can be manipulated." );
+        var holder = $('<td></td>').addClass('boo').text('result ' + cc);
 
-    var table = $('<table></table>').addClass('foo');
-    for(i=0; i<ncells; i++){
-        var row = $('<tr></tr>').addClass('bar');
+        var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval'+cc).attr('id','eval'+cc);
+        ebutton.attr('onclick',"evaluateBuffer('edit"+cc+"')");//"evaluateBuffer('edit1');"
 
-        var col = $('<td></td>').addClass('boo').text('result ' + i);
+        //var ubutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','auto'+cc).attr('id','auto'+cc);
+        var pullbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','pull'+cc).attr('id','pull'+cc);
+        var pushbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','push'+cc).attr('id','push'+cc);
+        var upbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','up'+cc).attr('id','up'+cc);
+        var dnbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','dn'+cc).attr('id','dn'+cc);
+        var ta = $('<textarea></textarea>').attr('id','edit1').attr('rows','8');//>******</textarea>
 
-        var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval');
-        var ubutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','auto');
-        var ta = $('<textarea></textarea>').attr('id','edit1').attr('rows','16');//>******</textarea>
+        holder.append(ebutton);
+        holder.append(pullbutton);
+        holder.append(pushbutton);
+        holder.append(upbutton);
+        holder.append(dnbutton);
+        holder.append(ta);
 
-        col.append(ebutton);
-        col.append(ubutton);
-        col.append(ta);
-
-        row.append(col);
-
-        table.append(row);
+        return holder;
     }
 
-    $('#here_table').append(table);
 
-  });
+ 
+    $( document ).ready(function() {
+        var nrows = 4;
+        var ncols = 3;
+
+        //$( "p" ).text( "The DOM is now loaded and can be manipulated." );
+
+        var table = $('<table></table>').addClass('foo');
+        
+        /*Add the password data
+            <td></td>
+            <td>Password: <input type="password" name="password" length="32" id="password" class="text"/></td>
+            </tr>
+        */
+        table.append(
+            $('<tr></tr>').append(
+                '<td>Password: <input type="password" name="password" length="32" id="password" class="text"/></td>'
+            )
+        );
+
+
+        var cc = 0; //Counter for each cell
+        for(i=0; i<nrows; i++){
+            var row = $('<tr></tr>').addClass('bar');
+            for(j=0; j<ncols; j++){
+                row.append(add_cell(cc++));
+            }
+            table.append(row);
+        }
+
+        $('#here_table').append(table);
+
+    });
+
+
+
  
   </script>
  
