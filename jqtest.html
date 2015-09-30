@@ -13,6 +13,7 @@
   <script src="visuals.js"></script>
   <script src="browser.js"></script>
   <script src="misc.js"></script>
+  <script src="evoevo.js"></script>
 
   <script>
 
@@ -22,14 +23,19 @@
         var holder = $('<td></td>').addClass('boo').text('result ' + cc);
 
         var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval'+cc).attr('id','eval'+cc);
-        ebutton.attr('onclick',"evaluateBuffer('edit"+cc+"')");//"evaluateBuffer('edit1');"
 
         //var ubutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','auto'+cc).attr('id','auto'+cc);
         var pullbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','pull'+cc).attr('id','pull'+cc);
         var pushbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','push'+cc).attr('id','push'+cc);
         var upbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','up'+cc).attr('id','up'+cc);
         var dnbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','dn'+cc).attr('id','dn'+cc);
-        var ta = $('<textarea></textarea>').attr('id','edit1').attr('rows','8');//>******</textarea>
+        var ta = $('<textarea></textarea>').attr('id','edit'+cc).attr('rows','4').attr('cols','20');//>******</textarea>
+
+        //Now let's associate the functions with the buttons:
+
+        ebutton.attr('onclick',"evaluateBuffer('edit"+cc+"')");//"evaluateBuffer('edit1');"
+        pullbutton.attr('onclick',"pullBuffer('edit"+cc+"')");//"evaluateBuffer('edit1');"
+
 
         holder.append(ebutton);
         holder.append(pullbutton);
@@ -63,7 +69,7 @@
         );
 
 
-        var cc = 0; //Counter for each cell
+        var cc = 1; //Counter for each cell
         for(i=0; i<nrows; i++){
             var row = $('<tr></tr>').addClass('bar');
             for(j=0; j<ncols; j++){
@@ -71,6 +77,21 @@
             }
             table.append(row);
         }
+
+
+        /*Add the feedback panel
+            <tr>
+            <td colspan="2"><textarea id="feedback" rows="6" style="width: 445px;"></textarea></td>
+            </tr>
+        */
+        table.append(
+            $('<tr></tr>').append(
+                '<td colspan="'+2+'"><textarea id="feedback" rows="12" ></textarea></td><td><textarea id="gafb" rows = "12"></textarea>'
+            )
+        );
+
+
+
 
         $('#here_table').append(table);
 
@@ -82,7 +103,8 @@
   </script>
  
 </head>
-<body>
+<body onload="setup()">
+<div id="global">
  
 <p>Not loaded yet.</p>
 
