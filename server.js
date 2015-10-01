@@ -1,11 +1,19 @@
 // required dependencies
 require('coffee-script');
-var express = require('express');
+var express = require('express'),       //;
+    //CORS additions (note comma at end of the above line)
+    cors = require('cors'),
+    port = process.env.PORT || 8080;//,    //This listens on port 3000- might need to change to 8080?
+    //app = express();                  //This variable is called `server' in the below
+
 var sharejs = require('share');
 var nopt = require('nopt');
 var zmq = require('zmq');
 var WebSocket = require('ws');
 var osc = require('osc');
+
+
+
 
 // global variables
 var stderr = process.stderr;
@@ -38,6 +46,7 @@ if(parsed['help']!=null) {
     stderr.write(" --zmq-port (-z) [number]  TCP port for 0mq connections to client (default: 8001)\n");
     stderr.write(" --ws-port (-w) [number]   TCP port for WebSocket connections to browsers and clients (default: 8002)\n");
     stderr.write(" --osc-port (-o) [number]  UDP port on which to receive OSC messages (default: none)\n");
+    //TODO: Add arguments for the CORS call to the GA
     process.exit(1);
 }
 
@@ -60,6 +69,33 @@ if(password == null) {
 
 var server = express();
 server.use(express.static(__dirname));
+
+/************************************************************************************/
+//CORS:
+server.use(cors());
+
+server.get('/hello', function(req, res, next){
+  res.json({
+    text: 'Simple CORS requests are working. [GET]'
+  });
+  console.log("extramuros: server.get called");
+});
+server.head('/hello', cors(), function(req, res){
+  res.send(204);
+  console.log("extramuros: server.head called");
+});
+server.post('/hello', cors(), function(req, res){
+  res.json({
+    text: 'Simple CORS requests are working. [POST]'
+  });
+  console.log("extramuros: server.post called");
+});
+
+
+
+
+
+/************************************************************************************/
 
 var pub = zmq.socket('pub');
 var zmqAddress = "tcp://*:" + zmqPort.toString();

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+ <title>CROStramuros</title>
+ <link rel="stylesheet" type="text/css" href="style.css">
+
+
+</head>
+
+<body onload="setup()">
+
+
+
+
+<div id="global">
+<table>
+
+<tr>
+<td></td>
+<td>Password: <input type="password" name="password" length="32" id="password" class="text"/></td>
+</tr>
+
+<tr>
+<td><input type="button" value="eval" class="evalButton" onclick="evaluateBuffer('edit1');"/></td>
+<td><textarea id="edit1" rows="6" disabled>******</textarea></td>
+</tr>
+
+<tr>
+<td><input type="button" value="eval" class="evalButton" onclick="evaluateBuffer('edit2');"/></td>
+<td><textarea id="edit2" rows="6" disabled>******</textarea></td>
+</tr>
+
+<tr>
+<td colspan="2"><textarea id="feedback" rows="6" disabled style="width: 445px;"></textarea></td>
+</tr>
+</table>
+
+<!-- CORS EXPERIMENTS -->
+<div id="corstests">
+
+<textarea id="corsin" rows="2" ></textarea>
+<input type="button" value="eval" class="corsButton" id="corsButton" onclick="evaluateCors('corsin');"/>
+<div id="corsout">
+<p>Cors Result will appear here</p></div>
+
+</div>
+
+
+<script src="/channel/bcsocket.js"></script>
+<script src="/share/share.uncompressed.js"></script>
+<script src="/share/textarea.js"></script>
+<script src="/share/json.js"></script>
+<!-- <script src="jquery.min.js"></script> -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="browser.js"></script>
+<script src="visuals.js"></script>
+<script src="misc.js"></script>
+
+
+<!---------------------->
+
+<script>
+
+/*  $button.click(function(){
+      $result.text('');
+      $error.text('');
+      $button.attr('disabled', 'disabled');
+      $.ajax({
+        url: url,
+        method: method,
+        success: function(data, state, res){
+          $button.removeAttr('disabled');
+          $result.css('border-color', 'black');
+          if(data){
+            $result.text(data.text);
+          }else{
+            $result.text('STATUS CODE: ' + res.status);
+          }
+        },
+        error: function(data, state){
+          $button.removeAttr('disabled');
+          $result.css('border-color', 'red');
+          $error.text(state);
+          console.log(data);
+        }
+      });
+
+NOTES on the github example:
+
+index.html has: 
+    a tag called <article> for each example. which has a 'data-url' and a 'data-method' attribute
+    a script called 'template' which is a set of html tags. The tags have NO ids.
+
+NOTE THE FOLLOWING:
+
+    document.getElementById('contents'); //returns a HTML DOM Object
+
+    var contents = $('#contents');  //returns a jQuery Object
+
+    In jQuery, to get the same result as document.getElementById, you can access the jQuery Object and get the first element in the object (Remember JavaScript objects act similar to associative arrays).
+
+    var contents = $('#contents')[0]; //returns a HTML DOM Object
+
+
+*/
+
+
+/* response.addHeader("Access-Control-Allow-Origin", "*"); */
+
+//TODO: Possibly need to check out the `feedback' options in browser.js
+function evaluateCors(tbox) {
+    //var password = getPassword();
+    //if(password) {
+
+        //var dabutton = document.getElementById("corsButton")
+        var dabutton = $("corsButton");
+        var jqtbox = $('#'+tbox);
+
+        dabutton.prop('disabled', true);
+
+        method = "GET";
+        //This is my tomcat test workspace
+        url = "http://localhost:8080/hello/sayhello";
+
+	    //var msg = { request: "eval", bufferName: name, password: password };
+	    //ws.send(JSON.stringify(msg));    
+        $.ajax({
+            url: url,
+            method: method,
+
+            //This function is run when the request succeeds:
+            success: function(data, state, res){
+                //dabutton.setAttribute('disabled',false);
+                dabutton.attr('disabled',false);
+                jqtbox.css('border-color', 'yellow');
+                jqtbox.css('color', 'yellow');
+                if(data){
+                     jqtbox.text(data);
+                     jqtbox.text("We should be seeing text: '"+data+"'");
+
+	                //console.log("data.text is '"+data.text+"'");
+                        console.log("data is '"+data+"'");
+                }else{
+                     jqtbox.text('STATUS CODE: ' + res.status);
+                }
+
+
+            },
+            error: function(data, state){
+                //dabutton.setAttribute('disabled',false);
+              jqtbox.css('border-color', 'red');
+              $error.text(state);
+              console.log(data);
+            }
+          });
+
+    //ifpassword  }
+}
+
+
+</script>
+
+
+
+</body>
+</html>
