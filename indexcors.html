@@ -117,15 +117,43 @@ function evaluateCors(tbox) {
         var jqtbox = $('#'+tbox);
 
         dabutton.prop('disabled', true);
+        
+        
+        jqtbox.css('border-color', 'red');
+        jqtbox.css('color', 'red');
+        
+        
 
         method = "GET";
         //This is my tomcat test workspace
-        url = "http://localhost:8080/hello/sayhello";
+        //url = "http://localhost:8080/hello/sayhello";
+		url = "http://localhost:8080/tidalGE/parsetidal";
+
+
+		var text = '{ "employees" : [' + 
+		'{ "firstName":"John" , "lastName":"Doe" },' +
+		'{ "firstName":"Anna" , "lastName":"Smith" },' +
+		'{ "firstName":"Peter" , "lastName":"Jones" } ]}';
+
+		var jobj = JSON.parse(text);
+
+
 
 	    //var msg = { request: "eval", bufferName: name, password: password };
 	    //ws.send(JSON.stringify(msg));    
         $.ajax({
             url: url,
+     		       
+     		data: JSON.stringify({
+            		action: "push",
+            		pattern: $("#edit1").val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
+            	}),
+			dataType   : 'json',
+			contentType: 'application/json',//; charset=UTF-8', // This is the money shot
+            
+            //data: 'd1 $ sound "bd bd bd bd sn sn sn sn "',
+            //contentType: 'text',
+            
             method: method,
 
             //This function is run when the request succeeds:
@@ -135,22 +163,29 @@ function evaluateCors(tbox) {
                 jqtbox.css('border-color', 'yellow');
                 jqtbox.css('color', 'yellow');
                 if(data){
-                     jqtbox.text(data);
-                     jqtbox.text("We should be seeing text: '"+data+"'");
+                     //jqtbox.text(data);
+                     jqtbox.text("We should be seeing text: '"+data.response+"'");
+
+                    //obj = JSON.parse(data);
 
 	                //console.log("data.text is '"+data.text+"'");
-                        console.log("data is '"+data+"'");
+                    console.log("data is '"+data.response+"'");
+                    
+                
+                    
                 }else{
-                     jqtbox.text('STATUS CODE: ' + res.status);
+                     jqtbox.text('no data, STATUS CODE: ' + res.status);
                 }
 
 
             },
             error: function(data, state){
-                //dabutton.setAttribute('disabled',false);
-              jqtbox.css('border-color', 'red');
-              $error.text(state);
-              console.log(data);
+				//dabutton.setAttribute('disabled',false);
+				jqtbox.css('border-color', 'red');
+				//$error.text(state);
+				console.log("Data is:");
+				console.log(data);
+				console.log("Error is:"+ state);
             }
           });
 
