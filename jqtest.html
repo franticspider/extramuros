@@ -18,6 +18,10 @@
   <script>
 
 
+	/*GLOBAL VARIABLES*/
+	var maxpop = 20;
+	var popn = [];
+
     function add_cell(cc){
 
         var holder = $('<td></td>').addClass('boo').text('result ' + cc);
@@ -29,12 +33,16 @@
         var pushbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','push'+cc).attr('id','push'+cc);
         var upbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','up'+cc).attr('id','up'+cc);
         var dnbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','dn'+cc).attr('id','dn'+cc);
-        var ta = $('<textarea></textarea>').attr('id','edit'+cc).attr('rows','4').attr('cols','20');//>******</textarea>
+        var ta = $('<textarea></textarea>').attr('id','edit'+cc).attr('rows','5').attr('cols','20');//>******</textarea>
+        var na = $('<textarea></textarea>').attr('id','notes'+cc).attr('rows','2').attr('cols','20').css("font-size","10px");//>******</textarea>
 
         //Now let's associate the functions with the buttons:
 
-        ebutton.attr('onclick',"evaluateBuffer('edit"+cc+"')");//"evaluateBuffer('edit1');"
-        pullbutton.attr('onclick',"pullBuffer('edit"+cc+"')");//"evaluateBuffer('edit1');"
+        ebutton.attr(   'onclick',"evalBuffer("+cc+",'eval')");//"evaluateBuffer('edit1');"
+        pullbutton.attr('onclick',"evalBuffer("+cc+",'pull')");//"evaluateBuffer('edit1');"
+        pushbutton.attr('onclick',"evalBuffer("+cc+",'push')");//"evaluateBuffer('edit1');"
+        upbutton.attr(  'onclick',"evalBuffer("+cc+",'up')"  );//"evaluateBuffer('edit1');"
+        dnbutton.attr(  'onclick',"evalBuffer("+cc+",'dn')"  );//"evaluateBuffer('edit1');"
 
 
         holder.append(ebutton);
@@ -43,6 +51,7 @@
         holder.append(upbutton);
         holder.append(dnbutton);
         holder.append(ta);
+        holder.append(na);
 
         return holder;
     }
@@ -79,14 +88,14 @@
         }
 
 
-        /*Add the feedback panel
+        /*Add the feedback panels
             <tr>
             <td colspan="2"><textarea id="feedback" rows="6" style="width: 445px;"></textarea></td>
             </tr>
         */
         table.append(
             $('<tr></tr>').append(
-                '<td colspan="'+2+'"><textarea id="feedback" rows="12" ></textarea></td><td><textarea id="gafb" rows = "12"></textarea>'
+                '<td>Tidal feedback<textarea id="feedback" rows="20" ></textarea></td><td>GA Population<textarea id="gafb" rows = "20"></textarea></td><td>Parser feedback<textarea id="parserfb" rows = "20"></textarea></td>'
             )
         );
 
@@ -94,9 +103,132 @@
 
 
         $('#here_table').append(table);
+        
+        
+		$('#feedback').css("font-size","8px");
+		$('#gafb').css("font-size","8px");
+		$('#parserfb').css("font-size","8px");
 
     });
+    
+    
+    function add_to_pop(pattern,fitness){
+    	var ind = {pattern: pattern, fitness: fitness};
+      	
+    	popn.push(ind);
+    	
+    	$('#gafb').val('wibble');
+    	
+    	gastring = "";
+    	
+    	console.log("popn size is "+popn.length+" new pattern is "+popn[0].pattern);
+    	for(i=0;i<popn.length;i++){
+    		gastring += i+"\t"+popn[i].fitness+"\t"+popn[i].pattern+"\n";
+    	} 	
+    	console.log(gastring);
+    	$('#gafb').val(gastring);
+    	
+    }
+    
+    
+	//TODO: Possibly need to check out the `feedback' options in browser.js
+	function evalBuffer(boxno,gaction) {
+    //var password = getPassword();
+    //if(password) {
 
+
+        //var dabutton = document.getElementById("corsButton")
+        
+        //TODO: get hold of all the controls based on the box number
+        var dabutton = $("corsButton");
+
+        var edit_box = $('#edit'+boxno);
+        var notes_box = $('#notes'+boxno);
+
+		if(gaction == "eval"){
+			ebs = "edit"+boxno;
+			evaluateBuffer(ebs);
+			
+		}
+		else{
+			//We need to send a string (or two) to the parser either way...
+			if(gaction == "push" || gaction == "pull"){
+
+				dabutton.prop('disabled', true);
+				
+				
+				edit_box.css('border-color', 'red');
+				edit_box.css('color', 'red');
+				
+				method = "GET";
+				
+				url = "http://localhost:8080/tidalGE/parsetidal";
+
+
+				//var msg = { request: "eval", bufferName: name, password: password };
+				//ws.send(JSON.stringify(msg));    
+				$.ajax({
+				    url: url,
+			 		       
+			 		data: JSON.stringify({
+				    		action: "push",
+				    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
+				    	}),
+					dataType   : 'json',
+					contentType: 'application/json',//; charset=UTF-8', // This is the money shot
+				    
+				    //data: 'd1 $ sound "bd bd bd bd sn sn sn sn "',
+				    //contentType: 'text',
+				    
+				    method: method,
+
+				    //This function is run when the request succeeds:
+				    success: function(data, state, res){
+				        //dabutton.setAttribute('disabled',false);
+				        dabutton.attr('disabled',false);
+				        edit_box.css('border-color', 'yellow');
+				        edit_box.css('color', 'yellow');
+				        if(data){
+				             //edit_box.text(data);
+				             notes_box.text("We should be seeing text: '"+data.response+"'");
+
+				            //obj = JSON.parse(data);
+
+					        //console.log("data.text is '"+data.text+"'");
+				            console.log("data is '"+data.response+"'");
+				            
+				            /* create popn member */
+				            if(data.valid == "true"){
+				            	console.log("Valid pattern found (value is "+data.valid+")");
+								$('#parserfb').val("Valid pattern found (value is "+data.valid+")");
+				            	add_to_pop(data.response,1.0);
+				        	}
+				        	else{
+				            	console.log("Pattern isn't valid (value is "+data.valid+")");
+								$('#parserfb').val("Pattern isn't valid (value is "+data.valid+")");
+				        	}
+				            
+				        }else{
+				             edit_box.text('no data, STATUS CODE: ' + res.status);
+				        }
+
+
+				    },
+				    error: function(data, state){
+						//dabutton.setAttribute('disabled',false);
+						edit_box.css('border-color', 'red');
+						//$error.text(state);
+						console.log("Data is:");
+						console.log(data);
+						console.log("Error is:"+ state);
+				    }
+				  });
+			 }
+		}
+	}
+
+
+</script>
 
 
  
@@ -106,7 +238,7 @@
 <body onload="setup()">
 <div id="global">
  
-<p>Not loaded yet.</p>
+<p>Tidal with Microbial Genetic Programming</p>
 
 <div id="here_table"></div>
  

@@ -5,7 +5,7 @@
 
 var popsize = 50;
 
-var grammar;s
+var grammar;
 
 function makeTidalGrammar(){
 
