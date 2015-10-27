@@ -1,0 +1,27 @@
+Notes on TGE-film 1
+
+DONE - Fix the colours, so that when we hit 'eval', the text color changes back to white
+
+DONE - fix the layout of the text boxes so that the bottom row is always aligned. 
+
+- eval doesn't seem to work after a pull until you do something in the textarea
+-- Shift+Enter does work - eval button does not..
+
+
+- need to sort out what it is to Push, Pull &c - two actions isn't enough
+-- Push - simply pushes a pattern into the population: no change
+-- Pull - should pull a genome out of the population
+-- pullmut - should pull a mutated genome out 
+
+DONE - problems with vowel pattern in the parser - 
+
+- vowel appears too often. Need to balance the weighting of this
+
+- Shape - number pattern is concatted together. Doesn't cause an error, but affects the pattern
+
+
+====THINGS TO DO=====
+
+1: make things a bit more variable in the sample sequence - add [] and *x and :y
+
+2: add some of the trans_ops to the front of the message - shouldn't be too hard....

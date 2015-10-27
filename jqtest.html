@@ -24,33 +24,38 @@
 
     function add_cell(cc){
 
-        var holder = $('<td></td>').addClass('boo').text('result ' + cc);
+        var holder = $('<td></td>').addClass('boo').text('result ' + cc ).append(" ");
 
-        var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval'+cc).attr('id','eval'+cc);
+        var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval').attr('id','eval'+cc);
 
         //var ubutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','auto'+cc).attr('id','auto'+cc);
-        var pullbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','pull'+cc).attr('id','pull'+cc);
-        var pushbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','push'+cc).attr('id','push'+cc);
-        var upbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','up'+cc).attr('id','up'+cc);
-        var dnbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','dn'+cc).attr('id','dn'+cc);
-        var ta = $('<textarea></textarea>').attr('id','edit'+cc).attr('rows','5').attr('cols','20');//>******</textarea>
-        var na = $('<textarea></textarea>').attr('id','notes'+cc).attr('rows','2').attr('cols','20').css("font-size","10px");//>******</textarea>
+        var pushbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','push').attr('id','push'+cc);
+        var pullbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','pull').attr('id','pull'+cc);
+        var pullmutbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','pullmut').attr('id','pullmut'+cc);
+        var upbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','up').attr('id','up'+cc);
+        var dnbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','dn').attr('id','dn'+cc);
+        var ta = $('<textarea>******</textarea>').attr('id','edit'+cc).attr('rows','5').attr('cols','20');//>******</textarea>
+        var na = $('<textarea>******</textarea>').attr('id','notes'+cc).attr('rows','2').attr('cols','20').css("font-size","10px");//>******</textarea>
 
         //Now let's associate the functions with the buttons:
 
         ebutton.attr(   'onclick',"evalBuffer("+cc+",'eval')");//"evaluateBuffer('edit1');"
-        pullbutton.attr('onclick',"evalBuffer("+cc+",'pull')");//"evaluateBuffer('edit1');"
         pushbutton.attr('onclick',"evalBuffer("+cc+",'push')");//"evaluateBuffer('edit1');"
+        pullbutton.attr('onclick',"evalBuffer("+cc+",'pull')");//"evaluateBuffer('edit1');"
+        pullmutbutton.attr('onclick',"evalBuffer("+cc+",'pullmut')");//"evaluateBuffer('edit1');"
         upbutton.attr(  'onclick',"evalBuffer("+cc+",'up')"  );//"evaluateBuffer('edit1');"
         dnbutton.attr(  'onclick',"evalBuffer("+cc+",'dn')"  );//"evaluateBuffer('edit1');"
 
 
-        holder.append(ebutton);
-        holder.append(pullbutton);
-        holder.append(pushbutton);
-        holder.append(upbutton);
+        holder.append(ebutton).append(" ");
+        holder.append(pushbutton).append(" ");
+        holder.append(pullbutton).append(" ");
+        holder.append(pullmutbutton).append(" ");
+        holder.append(upbutton).append(" ");
         holder.append(dnbutton);
+        holder.append("<br/>");
         holder.append(ta);
+        holder.append("<br/>");
         holder.append(na);
 
         return holder;
@@ -95,7 +100,7 @@
         */
         table.append(
             $('<tr></tr>').append(
-                '<td>Tidal feedback<textarea id="feedback" rows="20" ></textarea></td><td>GA Population<textarea id="gafb" rows = "20"></textarea></td><td>Parser feedback<textarea id="parserfb" rows = "20"></textarea></td>'
+                '<td>Tidal feedback<br/><textarea id="feedback" rows="20" ></textarea></td><td>GA Population<br/><textarea id="gafb" rows = "20"></textarea></td><td>Parser feedback<br/><textarea id="parserfb" rows = "20"></textarea></td>'
             )
         );
 
@@ -115,20 +120,37 @@
     function add_to_pop(pattern,fitness){
     	var ind = {pattern: pattern, fitness: fitness};
       	
-    	popn.push(ind);
-    	
-    	$('#gafb').val('wibble');
-    	
-    	gastring = "";
-    	
-    	console.log("popn size is "+popn.length+" new pattern is "+popn[0].pattern);
+      	var add = true;
     	for(i=0;i<popn.length;i++){
-    		gastring += i+"\t"+popn[i].fitness+"\t"+popn[i].pattern+"\n";
-    	} 	
-    	console.log(gastring);
-    	$('#gafb').val(gastring);
+    		if(popn[i].pattern == pattern){
+    			popn[i].fitness += 0.5;
+    			add = false;
+    			break;
+    		}	
+    	}
+      	
+      	if(add){
+			popn.push(ind);
+			
+    	}
+    	else{
+			console.log("Pattern \""+ pattern+ "\" is already in the population");
+    	}
     	
+		gastring = "";
+		
+		console.log("popn size is "+popn.length+" new pattern is "+popn[0].pattern);
+		for(i=0;i<popn.length;i++){
+			gastring += i+"\t"+popn[i].fitness+"\t"+popn[i].pattern+"\n";
+		} 	
+		console.log(gastring);
+		$('#gafb').val(gastring);
     }
+    
+    function regex_escape(str) {
+    	return str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&');
+	}
+    
     
     
 	//TODO: Possibly need to check out the `feedback' options in browser.js
@@ -147,7 +169,11 @@
 
 		if(gaction == "eval"){
 			ebs = "edit"+boxno;
+			
 			evaluateBuffer(ebs);
+			edit_box.css('border-color', 'grey');
+			edit_box.css('color', 'white');
+			
 			
 		}
 		else{
@@ -167,13 +193,35 @@
 
 				//var msg = { request: "eval", bufferName: name, password: password };
 				//ws.send(JSON.stringify(msg));    
+				
+				var msgdata;
+				
+				if(gaction == "push")
+				msgdata = JSON.stringify({
+				    		action: "push",
+				    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
+				    	})
+				if(gaction == "pull")
+				msgdata = JSON.stringify({
+				    		action: "pull",
+				    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn" |+| shape sine1' //
+				    	})
+				    	
+				//console.log('msgdata is' + msgdata)
+				//Encode the '+' etc..
+				msgdata = encodeURIComponent(msgdata);//regex_escape(msgdata)//msgdata.replace(/\+/g, "\\\+");
+				
+				console.log('msgdata is now' + msgdata)
+				
+				
 				$.ajax({
 				    url: url,
 			 		       
-			 		data: JSON.stringify({
-				    		action: "push",
-				    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
-				    	}),
+			 		data: msgdata, 
+			 			//JSON.stringify({
+				    	//	action: ,
+				    	//	pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
+				    	//}),
 					dataType   : 'json',
 					contentType: 'application/json',//; charset=UTF-8', // This is the money shot
 				    
@@ -191,6 +239,23 @@
 				        if(data){
 				             //edit_box.text(data);
 				             notes_box.text("We should be seeing text: '"+data.response+"'");
+				             //edit_box.text(data.response);
+				             
+				             edit_box.focus();
+				             edit_box.val(data.response);
+				             edit_box.trigger('textInput');
+				             
+				             ctr = jQuery.Event("keydown");
+							 ctr.which = 65;
+							 ctr.keyCode = 65;// # Some key code value
+							 //$("body").trigger(ctr);
+				             
+				             
+				             edit_box.trigger(ctr);//'keydown');
+				             edit_box.change();
+				             
+				             //The following doesn't work because the listner has already detected the change!
+							 //evaluateBuffer(edit_box);
 
 				            //obj = JSON.parse(data);
 
@@ -236,9 +301,9 @@
  
 </head>
 <body onload="setup()">
-<div id="global">
+<div id="global2">
  
-<p>Tidal with Microbial Genetic Programming</p>
+<p>Tidal with RNAworld Genetic Programming</p>
 
 <div id="here_table"></div>
  

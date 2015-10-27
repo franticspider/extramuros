@@ -158,6 +158,11 @@ wss.on('connection',function(ws) {
 		evaluateBuffer(n.bufferName);
 	    }
 	}
+	//Holder for a GP-based alternative evaluation
+	if(n.request == "evalGP"){
+	
+	
+	}
 	if(n.request == "evalJS") {
 	    if(n.password == password) {
 		evaluateJavaScriptGlobally(n.code);

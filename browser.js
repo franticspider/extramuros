@@ -62,6 +62,7 @@ function getPassword() {
 function evaluateBuffer(name) {
     var password = getPassword();
     if(password) {
+    console.log("Evaluating Buffer")
 	var msg = { request: "eval", bufferName: name, password: password };
 	ws.send(JSON.stringify(msg));
     }
@@ -90,6 +91,9 @@ function openEditor(name) {
 
 function setupKeyboardHandlers() {
     $('textarea').keydown(function (event) {
+    
+    console.log("Somebody's typing!");
+    
 	if(event.which == 13 && event.shiftKey && event.ctrlKey) {
 	    // ctrl+shift+enter: evaluate buffer as Javascript through server
 	    event.preventDefault();
