@@ -10,6 +10,7 @@
   <script src="/share/json.js"></script>
   <script src="jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="jquery-1.11.3.min.js"></script>
   <script src="visuals.js"></script>
   <script src="browser.js"></script>
   <script src="misc.js"></script>
@@ -24,7 +25,7 @@
 
     function add_cell(cc){
 
-        var holder = $('<td></td>').addClass('boo').text('result ' + cc ).append(" ");
+        var holder = $('<td></td>').addClass('boo').text('Box ' + cc ).append(" ");
 
         var ebutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','eval').attr('id','eval'+cc);
 
@@ -34,8 +35,8 @@
         var pullmutbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','pullmut').attr('id','pullmut'+cc);
         var upbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','up').attr('id','up'+cc);
         var dnbutton = $('<input></input>').addClass('evalButton').attr('type','button').attr('value','dn').attr('id','dn'+cc);
-        var ta = $('<textarea>******</textarea>').attr('id','edit'+cc).attr('rows','5').attr('cols','20');//>******</textarea>
-        var na = $('<textarea>******</textarea>').attr('id','notes'+cc).attr('rows','2').attr('cols','20').css("font-size","10px");//>******</textarea>
+        var ta = $('<textarea>******</textarea>').attr('id','edit'+cc).attr('rows','6').attr('cols','20');//>******</textarea>
+        var na = $('<textarea>******</textarea>').attr('id','notes'+cc).attr('rows','1').attr('cols','20').css("font-size","10px");//>******</textarea>
 
         //Now let's associate the functions with the buttons:
 
@@ -69,6 +70,11 @@
 
         //$( "p" ).text( "The DOM is now loaded and can be manipulated." );
 
+		var intro = $( '#intro_placeholder' ).text();
+
+		$( '#intro_placeholder' ).remove();
+
+
         var table = $('<table></table>').addClass('foo');
         
         /*Add the password data
@@ -78,7 +84,7 @@
         */
         table.append(
             $('<tr></tr>').append(
-                '<td>Password: <input type="password" name="password" length="32" id="password" class="text"/></td>'
+                '<td>Password: <input type="password" name="password" length="32" id="password" class="text"/></td><td>'+intro+'</td>'
             )
         );
 
@@ -100,23 +106,73 @@
         */
         table.append(
             $('<tr></tr>').append(
-                '<td>Tidal feedback<br/><textarea id="feedback" rows="20" ></textarea></td><td>GA Population<br/><textarea id="gafb" rows = "20"></textarea></td><td>Parser feedback<br/><textarea id="parserfb" rows = "20"></textarea></td>'
+                '<td>Tidal feedback<br/><textarea id="feedback" rows="30" ></textarea></td><td colspan = "2">GA Population<br/><textarea id="gafb" rows = "30" cols = "40" wrap="soft"></textarea></td>'
+                //<td>Parser feedback<br/><textarea id="parserfb" rows = "30"></textarea></td>'
             )
         );
-
-
-
-
+        
         $('#here_table').append(table);
-        
-        
 		$('#feedback').css("font-size","8px");
 		$('#gafb').css("font-size","8px");
-		$('#parserfb').css("font-size","8px");
+		//$('#parserfb').css("font-size","8px");
 
     });
     
     
+    function updateGAwindow(){
+    
+		gastring = "";
+		
+		console.log("popn size is "+popn.length+" new pattern is "+popn[0].pattern);
+		for(i=0;i<popn.length;i++){
+			gastring += i+"\t"+popn[i].fitness+"\t"+popn[i].pattern+"\n";
+		} 	
+		console.log(gastring);
+		$('#gafb').val(gastring);
+    }
+    
+    function leastFitIndex(){
+    	if(popn.length>0){
+    		var mfi =[];
+    			mfi.push(0)
+    		var fit = popn[0].fitness;
+    		for(i=1;i<popn.length;i++){
+    			if(popn[i].fitness == fit){
+    				mfi.push(i);
+				}
+    			if(popn[i].fitness < fit){
+    				//clear the array if indexes to the higher fitness value
+    				mfi.length = 0;
+    				mfi.push(i);
+    				fit = popn[i].fitness;
+    			}
+			}
+			choice = mfi[Math.floor(Math.random()*mfi.length)];
+    		
+    		return choice;
+    	}
+    	return 0;
+    }
+    
+    /* Fitness-weighted selection of an individual */
+    function selectFromPop(){
+    	var sum = 0;
+    	for(i=0;i<popn.length;i++)
+    		sum += popn[i].fitness;
+    	
+    	var val = Math.random()*sum;
+    	
+    	sum = 0;
+    	for(i=0;i<popn.length;i++){
+    		sum += popn[i].fitness;
+    		if(val<sum)
+    			return i;
+    	}
+    	
+    	console.log("can't select an individual from popn")
+    	return -1;
+    }
+   
     function add_to_pop(pattern,fitness){
     	var ind = {pattern: pattern, fitness: fitness};
       	
@@ -130,21 +186,17 @@
     	}
       	
       	if(add){
+      		if(popn.length>=maxpop){
+      			//Remove the least fit individual
+      			popn.splice(leastFitIndex(),1);
+      		}
 			popn.push(ind);
-			
     	}
     	else{
 			console.log("Pattern \""+ pattern+ "\" is already in the population");
     	}
     	
-		gastring = "";
-		
-		console.log("popn size is "+popn.length+" new pattern is "+popn[0].pattern);
-		for(i=0;i<popn.length;i++){
-			gastring += i+"\t"+popn[i].fitness+"\t"+popn[i].pattern+"\n";
-		} 	
-		console.log(gastring);
-		$('#gafb').val(gastring);
+    	updateGAwindow();
     }
     
     function regex_escape(str) {
@@ -152,144 +204,235 @@
 	}
     
     
+    function inPopn(pattern){
+    	console.log("Looking for pattern '"+pattern+"'")
+		var found = false
+		//Check if we've already seen this pattern
+		for(i=0;i<popn.length;i++){
+			if(popn[i].pattern == pattern){
+				console.log("found it!");
+				idx = i;
+				found = true;
+				break;
+			}	
+		}
+    	return found;
+    }
+    
+    
+    function ratePattern(name, vval){
+    
+		var found = false;
+		var idx = -1;
+		for(i=0;i<popn.length;i++){
+			if(popn[i].pattern == $('#'+name).val()){
+				idx = i;
+				found = true;
+				break;
+			}	
+		}	
+		
+		//change the fitness by the specified amount
+		if(found){
+			popn[idx].fitness += vval;
+			
+            //notes_box.val("Changing fitness of popn member "+i+" by "+vval);
+			if(popn[idx].fitness <= 0){ //remove the individual 
+				popn.splice(idx,1);
+			}
+			updateGAwindow();
+		}
+		return idx;
+    }
+    
     
 	//TODO: Possibly need to check out the `feedback' options in browser.js
 	function evalBuffer(boxno,gaction) {
     //var password = getPassword();
     //if(password) {
-
-
-        //var dabutton = document.getElementById("corsButton")
-        
+      
         //TODO: get hold of all the controls based on the box number
         var dabutton = $("corsButton");
 
         var edit_box = $('#edit'+boxno);
         var notes_box = $('#notes'+boxno);
 
+		var	ebs = "edit"+boxno;
 		if(gaction == "eval"){
-			ebs = "edit"+boxno;
+		
 			
 			evaluateBuffer(ebs);
-			edit_box.css('border-color', 'grey');
-			edit_box.css('color', 'white');
-			
+			//edit_box.css('border-color', 'grey');
+			//edit_box.css('color', 'white');
 			
 		}
-		else{
-			//We need to send a string (or two) to the parser either way...
-			if(gaction == "push" || gaction == "pull"){
-
-				dabutton.prop('disabled', true);
-				
-				
-				edit_box.css('border-color', 'red');
-				edit_box.css('color', 'red');
-				
-				method = "GET";
-				
-				url = "http://localhost:8080/tidalGE/parsetidal";
-
-
-				//var msg = { request: "eval", bufferName: name, password: password };
-				//ws.send(JSON.stringify(msg));    
-				
-				var msgdata;
-				
-				if(gaction == "push")
-				msgdata = JSON.stringify({
-				    		action: "push",
-				    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
-				    	})
-				if(gaction == "pull")
-				msgdata = JSON.stringify({
-				    		action: "pull",
-				    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn" |+| shape sine1' //
-				    	})
-				    	
-				//console.log('msgdata is' + msgdata)
-				//Encode the '+' etc..
-				msgdata = encodeURIComponent(msgdata);//regex_escape(msgdata)//msgdata.replace(/\+/g, "\\\+");
-				
-				console.log('msgdata is now' + msgdata)
-				
-				
-				$.ajax({
-				    url: url,
-			 		       
-			 		data: msgdata, 
-			 			//JSON.stringify({
-				    	//	action: ,
-				    	//	pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn"'
-				    	//}),
-					dataType   : 'json',
-					contentType: 'application/json',//; charset=UTF-8', // This is the money shot
-				    
-				    //data: 'd1 $ sound "bd bd bd bd sn sn sn sn "',
-				    //contentType: 'text',
-				    
-				    method: method,
-
-				    //This function is run when the request succeeds:
-				    success: function(data, state, res){
-				        //dabutton.setAttribute('disabled',false);
-				        dabutton.attr('disabled',false);
-				        edit_box.css('border-color', 'yellow');
-				        edit_box.css('color', 'yellow');
-				        if(data){
-				             //edit_box.text(data);
-				             notes_box.text("We should be seeing text: '"+data.response+"'");
-				             //edit_box.text(data.response);
-				             
-				             edit_box.focus();
-				             edit_box.val(data.response);
-				             edit_box.trigger('textInput');
-				             
-				             ctr = jQuery.Event("keydown");
-							 ctr.which = 65;
-							 ctr.keyCode = 65;// # Some key code value
-							 //$("body").trigger(ctr);
-				             
-				             
-				             edit_box.trigger(ctr);//'keydown');
-				             edit_box.change();
-				             
-				             //The following doesn't work because the listner has already detected the change!
-							 //evaluateBuffer(edit_box);
-
-				            //obj = JSON.parse(data);
-
-					        //console.log("data.text is '"+data.text+"'");
-				            console.log("data is '"+data.response+"'");
-				            
-				            /* create popn member */
-				            if(data.valid == "true"){
-				            	console.log("Valid pattern found (value is "+data.valid+")");
-								$('#parserfb').val("Valid pattern found (value is "+data.valid+")");
-				            	add_to_pop(data.response,1.0);
-				        	}
-				        	else{
-				            	console.log("Pattern isn't valid (value is "+data.valid+")");
-								$('#parserfb').val("Pattern isn't valid (value is "+data.valid+")");
-				        	}
-				            
-				        }else{
-				             edit_box.text('no data, STATUS CODE: ' + res.status);
-				        }
-
-
-				    },
-				    error: function(data, state){
-						//dabutton.setAttribute('disabled',false);
-						edit_box.css('border-color', 'red');
-						//$error.text(state);
-						console.log("Data is:");
-						console.log(data);
-						console.log("Error is:"+ state);
-				    }
-				  });
-			 }
+		else if(gaction == "pull"){
+			console.log("pulling from popn")
+			//if(!inPopn($(edit_box).val()) ){
+	            var i = selectFromPop();
+	            $(edit_box).val(popn[i].pattern);
+	            notes_box.val("Pulling popn member "+i);	
+			//}			
+		
 		}
+		else if(gaction == "up" || gaction == "dn"){
+		
+		
+			var vval = 0;
+			console.log("someone is voting for a pattern")
+			if(gaction == "up") vval =  0.25;
+			if(gaction == "dn") vval = -0.25;
+			
+			//find the matching pattern
+		
+			var found = false;
+			var idx = -1;
+			for(i=0;i<popn.length;i++){
+				if(popn[i].pattern == $(edit_box).val()){
+					idx = i;
+					found = true;
+					break;
+				}	
+			}	
+			
+			//change the fitness by the specified amount
+			if(found){
+				popn[i].fitness += vval;
+				
+	            notes_box.val("Changing fitness of popn member "+i+" by "+vval);
+				if(popn[i].fitness <= 0){ //remove the individual 
+					popn.splice(i,1);
+				}
+				updateGAwindow();
+			}
+			else{
+				console.log("Pattern not found - can't rate it");
+				notes_box.val("Pattern not in popn - can't rate it");
+			}
+			
+		}
+		else if(gaction == "push" ||gaction == "pullmut" ){
+
+		
+			dabutton.prop('disabled', true);
+			
+			edit_box.css('border-color', 'red');
+			edit_box.css('color', 'red');
+			
+			method = "GET";
+			
+			url = "http://localhost:8080/tidalGE/parsetidal";
+
+
+			//var msg = { request: "eval", bufferName: name, password: password };
+			//ws.send(JSON.stringify(msg));    
+			
+			var msgdata;
+			
+			if(gaction == "push"){
+				msgdata = JSON.stringify({
+				   		action: "push",
+			    		pattern: $(edit_box).val().replace(/\r?\n|\r/," "),//'d1 $ sound "bd bd bd bd sn sn sn sn"'
+			    	})
+				notes_box.val("Pushing pattern to population");
+			}
+			//TODO: make the server recognise pullmut...    	
+			if(gaction == "pullmut"){
+				msgdata = JSON.stringify({
+			    		action: "pull",
+			    		pattern: $(edit_box).val()//'d1 $ sound "bd bd bd bd sn sn sn sn" |+| shape sine1' //
+			    	})
+				notes_box.val("Pulling a mutation of this pattern");
+				ratePattern(ebs, 0.49)
+			}
+			    	
+			//console.log('msgdata is' + msgdata)
+			//Encode the '+' etc..
+			msgdata = encodeURIComponent(msgdata);//regex_escape(msgdata)//msgdata.replace(/\+/g, "\\\+");
+			
+			console.log('msgdata is now' + msgdata)
+			
+			
+			$.ajax({
+			    url: url,
+		 		       
+		 		data: msgdata, 
+				dataType   : 'json',
+				contentType: 'application/json',//; charset=UTF-8', // This is the money shot
+			    
+			    //data: 'd1 $ sound "bd bd bd bd sn sn sn sn "',
+			    //contentType: 'text',
+			    
+			    method: method,
+
+			    //This function is run when the request succeeds:
+			    success: function(data, state, res){
+			        //dabutton.setAttribute('disabled',false);
+			        dabutton.attr('disabled',false);
+			        edit_box.css('border-color', 'yellow');
+			        edit_box.css('color', 'yellow');
+			        if(data){
+			        
+			        	var answerPattern = ""
+			        		
+						if(gaction == "push"){
+							answerPattern = $(edit_box).val();
+							
+					        /* create popn member */
+					        if(data.valid == "true"){
+					        	notes_box.val("Valid pattern found (value is "+data.valid+")");
+								//$('#parserfb').val("Valid pattern found (value is "+data.valid+")");
+					        	add_to_pop(edit_box.val(),1.0);
+					    	}
+					    	else{
+					        	notes_box.val("Pattern isn't valid (value is "+data.valid+")");
+								//$('#parserfb').val("Pattern isn't valid (value is "+data.valid+")");
+					    	}
+						}
+						if(gaction == "pullmut"){
+							answerPattern = data.response;
+							notes_box.val("Mutation found (shown above)");
+			        	}
+			        
+						//edit_box.text(data);
+						notes_box.text("We should be seeing text: '"+answerPattern+"'");
+						//edit_box.text(data.response);
+
+						edit_box.focus();
+						edit_box.val(answerPattern);
+						edit_box.trigger('textInput');
+
+						ctr = jQuery.Event("keydown");
+						ctr.which = 65;
+						ctr.keyCode = 65;// # Some key code value
+						//$("body").trigger(ctr);
+
+
+						edit_box.trigger(ctr);//'keydown');
+						edit_box.change();
+
+						console.log("data is '"+answerPattern+"'");
+
+			            
+			        }else{
+			             edit_box.text('no data, STATUS CODE: ' + res.status);
+			        }
+
+
+			    },
+			    error: function(data, state){
+					//dabutton.setAttribute('disabled',false);
+					edit_box.css('border-color', 'red');
+					//$error.text(state);
+					console.log("Data is:");
+					console.log(data);
+					console.log("Error is:"+ state);
+					
+					notes_box.val("Error is:"+ state);
+			    }
+			  });
+		 }
+		 edit_box.focus();
 	}
 
 
@@ -303,10 +446,9 @@
 <body onload="setup()">
 <div id="global2">
  
-<p>Tidal with RNAworld Genetic Programming</p>
+<p id = "intro_placeholder">Tidal with RNAworld Genetic Programming</p>
 
 <div id="here_table"></div>
- 
  
 </body>
 </html>

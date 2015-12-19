@@ -62,9 +62,14 @@ function getPassword() {
 function evaluateBuffer(name) {
     var password = getPassword();
     if(password) {
-    console.log("Evaluating Buffer")
-	var msg = { request: "eval", bufferName: name, password: password };
-	ws.send(JSON.stringify(msg));
+		console.log("Evaluating Buffer "+name);
+		$('#'+name).css('border-color', 'grey');
+		$('#'+name).css('color', 'white');
+		var msg = { request: "eval", bufferName: name, password: password };
+		ws.send(JSON.stringify(msg));
+		
+		//Check if the pattern is in popn, and update fitness if so
+		ratePattern(name, 0.5)
     }
 }
 
@@ -109,6 +114,7 @@ function setupKeyboardHandlers() {
 	else if(event.which == 13 && event.shiftKey) {
 	    // shift+Enter: evaluate buffer globally through the server   
 	    event.preventDefault();
+	    console.log("event.target.id is "+event.target.id);
 	    evaluateBuffer(event.target.id);
 	}
 	else if(event.which == 67 && event.ctrlKey && event.shiftKey) {

@@ -4,14 +4,14 @@ DONE - Fix the colours, so that when we hit 'eval', the text color changes back 
 
 DONE - fix the layout of the text boxes so that the bottom row is always aligned. 
 
-- eval doesn't seem to work after a pull until you do something in the textarea
+DONE - eval doesn't seem to work after a pull until you do something in the textarea
 -- Shift+Enter does work - eval button does not..
 
 
-- need to sort out what it is to Push, Pull &c - two actions isn't enough
--- Push - simply pushes a pattern into the population: no change
--- Pull - should pull a genome out of the population
--- pullmut - should pull a mutated genome out 
+DONE- need to sort out what it is to Push, Pull &c - two actions isn't enough
+		-- Push - simply pushes a pattern into the population: no change
+		-- Pull - should pull a genome out of the population
+		-- pullmut - should pull a mutated genome out - like pull did originally
 
 DONE - problems with vowel pattern in the parser - 
 
@@ -25,3 +25,10 @@ DONE - problems with vowel pattern in the parser -
 1: make things a bit more variable in the sample sequence - add [] and *x and :y
 
 2: add some of the trans_ops to the front of the message - shouldn't be too hard....
+
+3: delete things as well as add them - particularly the |+| operators - should we have >1 of each?
+
+4: Check that we get the right lists out of each operation - still get the occasional comma where it's not needed
+
+
+5: Clear up the messages that appear on button press, and the colours of the boxes

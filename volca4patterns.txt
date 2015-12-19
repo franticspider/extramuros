@@ -1,0 +1,21 @@
+
+#plug the usbmidi cable in first, then launch startup.sh
+
+
+keyStreams <- midiproxy 100 "USB Midi MIDI 1" [(keys, 2)]
+[k1] <- sequence keyStreams
+
+cps 0.6
+
+k1  $ note " [[30 54 30] 30 , 28 10 10(4,8)] " |+|  ctf (scale 0.0 1.0 $ slow 8 sine1) |+| dur "[[ 0.01 0.01 0.1] 2], 0.01 0.01 3(4,8)"
+
+
+
+#or try this:
+
+k1  $ degrade $  note " ~ 36 124 ~ 12  24 ~ 48" |+|  ctf (scale 0.0 1.0 $ slow 8 sine1) |+| dur "0.1 0.05 0.5" 
+
+
+k1  $ degrade $  note " ~ 36 124 ~ 12  24 ~ 48" |+| dur "0.1 0.25 0.5 12 0.1 1 0.5 0.3" 
+
+d1 $ sound "bd hc bd [hc hc]"

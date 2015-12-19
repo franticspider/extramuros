@@ -10,6 +10,10 @@ sh start.sh
 
 This script starts dirt, server and client for tidal
 
+TidalGE runs best in *kiosk mode*. To start this in linux do
+
+	$ google-chrome --kiosk http://127.0.0.1:8000/jqtest.html
+
 
 ##Slow Start
 
