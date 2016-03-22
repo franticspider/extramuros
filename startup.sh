@@ -24,3 +24,21 @@ xterm -e node server.js --password disney &
 #
 #TODO: fix the security issue here ;)
 xterm -e node client.js --server 127.0.0.1 --tidal --feedback --osc-port 8000 --password disney &
+
+
+
+#######################################################
+# START THE PARSER SERVER (to generate legal mutations)
+#
+
+~/localtomcat/bin/catalina.sh run
+
+
+
+
+#######################################################
+# Open the browser:
+#
+echo "All done! pointing your browser at http://sjh-evotop:8000/jqtest.html"
+echo "password is 'disney'"
+google-chrome http://sjh-evotop:8000/jqtest.html
