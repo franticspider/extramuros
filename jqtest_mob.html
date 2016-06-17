@@ -65,14 +65,15 @@
 
  
     $( document ).ready(function() {
-        var nrows = 4;
-        var ncols = 3;
+        var nrows = 1;
+        var ncols = 1;
 
         //$( "p" ).text( "The DOM is now loaded and can be manipulated." );
 
 		var intro = $( '#intro_placeholder' ).text();
 
 		$( '#intro_placeholder' ).remove();
+
 
         var table = $('<table></table>').addClass('foo');
         
@@ -320,6 +321,7 @@
 			
 			method = "GET";
 			
+			
 			//Generate the urlname 
 			
     		ipname = location.host;
@@ -328,7 +330,7 @@
     		
 			
 			urlname = "http://"+ipno+":8080/tidalGE/parsetidal";
-			//alert(urlname);
+			alert(urlname);
 
 
 			//var msg = { request: "eval", bufferName: name, password: password };

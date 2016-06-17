@@ -152,36 +152,36 @@ wss.on('connection',function(ws) {
     };
     if(udp!=null) udp.addListener("message",udpListener);
     ws.on("message",function(m) {
-	var n = JSON.parse(m);
-	if(n.request == "eval") {
-	    if(n.password == password) {
-		evaluateBuffer(n.bufferName);
-	    }
-	}
-	//Holder for a GP-based alternative evaluation
-	if(n.request == "evalGP"){
+		var n = JSON.parse(m);
+		if(n.request == "eval") {
+			if(n.password == password) {
+			evaluateBuffer(n.bufferName);
+			}
+		}
+		//Holder for a GP-based alternative evaluation
+		if(n.request == "evalGP"){
 	
 	
-	}
-	if(n.request == "evalJS") {
-	    if(n.password == password) {
-		evaluateJavaScriptGlobally(n.code);
-	    }
-	}
-	if(n.request == "oscFromClient") {
-	    if(n.password == password) {
-		forwardOscFromClient(n.address,n.args);
-	    }
-	}
-	if(n.request == "feedback") {
-	    if(n.password == password) {
-		forwardFeedbackFromClient(n.text);
-	    }
-	}
+		}
+		if(n.request == "evalJS") {
+			if(n.password == password) {
+			evaluateJavaScriptGlobally(n.code);
+			}
+		}
+		if(n.request == "oscFromClient") {
+			if(n.password == password) {
+			forwardOscFromClient(n.address,n.args);
+			}
+		}
+		if(n.request == "feedback") {
+			if(n.password == password) {
+			forwardFeedbackFromClient(n.text);
+			}
+		}
     });
     ws.on("close",function(code,msg) {
-	console.log("");
-	if(udp!=null)udp.removeListener("message",udpListener);
+		console.log("");
+		if(udp!=null)udp.removeListener("message",udpListener);
     });
 });
 
